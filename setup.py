@@ -30,17 +30,11 @@ setup(
     'setuptools_scm',
   ],
   install_requires=[
-    'pytypeworks',
     'zuspec-dataclasses',
-    'pyvsc-dataclasses',
-    'fltools',
-    'fusesoc',
-    'pyyaml',
     'vsc-dm',
     'vsc-solvers',
     'zuspec-arl-dm',
     'zuspec-arl-eval',
-    'zuspec-be-sw',
     'zuspec-fe-parser',
     'zuspec-parser'
   ],
