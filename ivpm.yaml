@@ -28,12 +28,6 @@ package:
       url: https://github.com/zuspec/zuspec-parser.git
     - name: zuspec-fe-parser
       url: https://github.com/zuspec/zuspec-fe-parser.git
-    - name: zuspec-be-sw
-      url: https://github.com/zuspec/zuspec-be-sw.git
-    - name: fltools
-      url: https://github.com/fvutils/fltools.git
-    - name: fusesoc
-      url: https://github.com/olofk/fusesoc.git
     - name: ivpm
       src: pypi
     - name: ninja
@@ -61,12 +55,6 @@ package:
       url: https://github.com/zuspec/zuspec-parser.git
     - name: zuspec-fe-parser
       url: https://github.com/zuspec/zuspec-fe-parser.git
-    - name: zuspec-be-sw
-      url: https://github.com/zuspec/zuspec-be-sw.git
-    - name: fltools
-      url: https://github.com/fvutils/fltools.git
-    - name: fusesoc
-      url: https://github.com/olofk/fusesoc.git
     - name: ivpm
       src: pypi
     - name: ninja
