@@ -19,7 +19,6 @@
 #*     Author: 
 #*
 #****************************************************************************
-from . import Ctxt
 from .deferred_task_caller import DeferredTaskCaller
 from .function_impl_trap import FunctionImplTrap
 from .runner_thread import RunnerThread
@@ -37,7 +36,7 @@ class Runner(arl_eval.EvalBackend):
             self, 
             root_comp,
             executor_if=None,
-            ctxt=None,
+            ctxt : 'Context' = None,
             backend=None):
         super().__init__()
         
@@ -67,11 +66,15 @@ class Runner(arl_eval.EvalBackend):
         
         pass
 
-    async def run(self, root_action, seed=None):
-        if seed is not None:
-            randstate = vsc_solvers_f.mkRandState(str(seed))
-        else:
-            randstate = Ctxt.inst().nextState()
+    def mkRandState(self, seed : str):
+        vsc_solvers_f = vsc_solvers.Factory.inst()
+        return vsc_solvers_f.mkRandState(str(seed))
+
+    async def run(self, root_action, randstate):
+        # if seed is not None:
+        #     randstate = vsc_solvers_f.mkRandState(str(seed))
+        # else:
+        #     randstate = Ctxt.inst().nextState()
             
         arl_eval_f = arl_eval.Factory.inst()
         vsc_solvers_f = vsc_solvers.Factory.inst()
@@ -131,18 +134,18 @@ class Runner(arl_eval.EvalBackend):
                                 self._executor_func_m[None]
                                 # TODO: should probably check args
                                 print("Found in locals")
-                                assoc_data = TaskBuildTaskCaller().build(
-                                    f, 
-                                    solve,
-                                    caller_f.f_locals[name])
+                                func = caller_f.f_locals[name]
+                                if not solve and not inspect.iscoroutinefunction(func):
+                                    raise Exception("Function %s is a target function, but not declared 'async'" % name)
+                                assoc_data = TaskCaller(self._ctxt, func, not solve)
                                 f.setAssociatedData(assoc_data)
                                 break
                             elif name in caller_f.f_globals.keys():
                                 print("Found in globals")
-                                assoc_data = TaskBuildTaskCaller().build(
-                                    f, 
-                                    solve,
-                                    caller_f.f_globals[name])
+                                func = caller_f.f_globals[name]
+                                if not solve and not inspect.iscoroutinefunction(func):
+                                    raise Exception("Function %s is a target function, but not declared 'async'" % name)
+                                assoc_data = TaskCaller(self._ctxt, func, not solve)
                                 f.setAssociatedData(assoc_data)
                                 break
                             caller_f = caller_f.f_back

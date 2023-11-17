@@ -29,6 +29,8 @@ class Actor(object):
         self._action_t = action_t
 
     async def run(self):
+        # Get the active configuration, probing the
+        # environment if necessary
         envcfg = EnvConfig.inst()
 
         runner = Runner(

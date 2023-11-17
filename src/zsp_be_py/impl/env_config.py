@@ -35,7 +35,7 @@ class EnvConfig(object):
     def getRunnerBackend(self):
         return self._provider.getRunnerBackend()
     
-    def getContext(self):
+    def getContext(self) -> 'Context':
         return self._provider.getContext()
     
     @classmethod
@@ -48,16 +48,17 @@ class EnvConfig(object):
 
     @classmethod
     def inst(cls):
-        if cls._inst is None:
-            provider = None
-            for f in cls._provider_f:
-                provider = f.create()
-                if provider is not None:
-                    break
+        # if cls._inst is None:
+        #     raise Exception("EnvConfig has not been set")
+            # provider = None
+            # for f in cls._provider_f:
+            #     provider = f.create()
+            #     if provider is not None:
+            #         break
             
-            if provider is None:
-                raise Exception("Failed to auto-detect environment")
-            cls._inst = EnvConfig(provider)
+            # if provider is None:
+            #     raise Exception("Failed to auto-detect environment")
+            # cls._inst = EnvConfig(provider)
         return cls._inst
 
     @classmethod

@@ -19,18 +19,20 @@
 #*     Author: 
 #*
 #****************************************************************************
-from zsp_arl_dm import ValRefToPyVal
+from zsp_arl_dm import ValRefToPyVal, PyValToValRef
 import zsp_arl_eval.core as zsp_eval
-from .impl.deferred_task_caller import DeferredTaskCaller
+from .deferred_task_caller import DeferredTaskCaller
 from .runner_thread import RunnerThread
 
 class TaskCaller(object):
 
     def __init__(self, 
+                 ctxt,
                  func,
                  is_async):
         self._func = func
         self._is_async = is_async
+        self._ctxt = ctxt
         self._param_xformers = []
         self._ret_xformer = None
         pass
@@ -38,15 +40,14 @@ class TaskCaller(object):
     def call(self, thread, params):
         func_params = []
         for i,p in enumerate(params):
-            func_params.append(self._param_xformers[i](p))
+            func_params.append(ValRefToPyVal().toPyVal(p))
 
         ret = self._func(*func_params)
 
-        if self._ret_xformer is not None:
-            ret = self._ret_xformer(thread, ret)
-            thread.setResult(ret)
-        else:
+        if ret is None:
             thread.setResult(thread.mkValRefInt(0, False, 1))
+        else:
+            thread.setResult(PyValToValRef(self._ctxt).toValRef(ret))
 
     async def call_target(self, thread, params):
         func_params = []
@@ -55,8 +56,7 @@ class TaskCaller(object):
 
         ret = await self._func(*func_params)
 
-        if self._ret_xformer is not None:
-            ret = self._ret_xformer(thread, ret)
-            thread.setResult(ret)
-        else:
+        if ret is None:
             thread.setResult(thread.mkValRefInt(0, False, 1))
+        else:
+            thread.setResult(PyValToValRef(self._ctxt).toValRef(ret))
