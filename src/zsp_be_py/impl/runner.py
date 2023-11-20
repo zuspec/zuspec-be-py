@@ -95,6 +95,10 @@ class Runner(arl_eval.EvalBackend):
         self.map_functions(evaluator)
 
         while evaluator.eval():
+            if evaluator.haveError():
+                print("Python Eval encountered an error: %s" % evaluator.getError(), flush=True)
+                raise Exception("Error: %s" % evaluator.getError())
+
             if len(self._active_coroutines) == 0:
                 if evaluator.eval():
                     raise Exception("stall during execution")
