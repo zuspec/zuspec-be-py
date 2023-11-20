@@ -50,6 +50,7 @@ class Runner(arl_eval.EvalBackend):
                 raise Exception("No default backend is present")
 
         self._ctxt = ctxt
+        self._pymodules = {}
         self._backend = backend
         self._executor_if = executor_if
         self._executor_func_m = {}
@@ -69,6 +70,9 @@ class Runner(arl_eval.EvalBackend):
     def mkRandState(self, seed : str):
         vsc_solvers_f = vsc_solvers.Factory.inst()
         return vsc_solvers_f.mkRandState(str(seed))
+    
+    def addPyModule(self, name, obj):
+        self._pymodules[name] = obj
 
     async def run(self, root_action, randstate):
         # if seed is not None:
@@ -91,6 +95,9 @@ class Runner(arl_eval.EvalBackend):
             self._pss_top_t,
             root_action_t,
             self)
+
+        for key,val in self._pymodules.items():
+            evaluator.addPyModule(key, val)
 
         self.map_functions(evaluator)
 
