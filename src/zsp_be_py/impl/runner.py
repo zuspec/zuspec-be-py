@@ -24,8 +24,8 @@ from .function_impl_trap import FunctionImplTrap
 from .runner_thread import RunnerThread
 from .task_caller import TaskCaller
 from .task_build_task_caller import TaskBuildTaskCaller
-import asyncio
 import inspect
+import sys
 import vsc_solvers.core as vsc_solvers
 import zsp_arl_dm.core as arl_dm
 import zsp_arl_eval.core as arl_eval
@@ -49,6 +49,8 @@ class Runner(arl_eval.EvalBackend):
             if backend is None:
                 raise Exception("No default backend is present")
 
+        self._msg_fp = None
+        self._msg_pref = ""
         self._ctxt = ctxt
         self._pymodules = {}
         self._backend = backend
@@ -73,6 +75,9 @@ class Runner(arl_eval.EvalBackend):
     
     def addPyModule(self, name, obj):
         self._pymodules[name] = obj
+
+    def setMsgFP(self, fp):
+        self._msg_fp = fp
 
     async def run(self, root_action, randstate):
         # if seed is not None:
@@ -207,5 +212,12 @@ class Runner(arl_eval.EvalBackend):
                 task_caller.call(thread, params)
         else:
             print("No task caller for %s" % func_t.name())
+    def emitMessage(self, msg):
+        if self._msg_fp is not None:
+            self._msg_fp.write(self._msg_pref)
+            self._msg_fp.write(msg)
+            self._msg_fp.write("\n")
+        else:
+            print(self._msg_pref + msg)
 
 
