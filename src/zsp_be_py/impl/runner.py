@@ -107,9 +107,10 @@ class Runner(arl_eval.EvalBackend):
         self.map_functions(evaluator)
 
         while evaluator.eval():
-            if evaluator.haveError():
-                print("Python Eval encountered an error: %s" % evaluator.getError(), flush=True)
-                raise Exception("Error: %s" % evaluator.getError())
+            if evaluator.hasFlags(arl_eval.EvalFlags.Error):
+                err = "<unknown>"
+                print("Python Eval encountered an error: %s" % err, flush=True)
+                raise Exception("Error: %s" % err)
 
             if len(self._active_coroutines) == 0:
                 if evaluator.eval():
@@ -121,10 +122,11 @@ class Runner(arl_eval.EvalBackend):
                 self._active_coroutines.clear()
                 for t in tmp:
                     if not self._backend.taskIsDone(t):
-                        print("Coroutine not yet done", flush=True)
+#                        print("Coroutine not yet done", flush=True)
                         self._active_coroutines.append(t)
                     else:
-                        print("Coroutine is done", flush=True)
+#                        print("Coroutine is done", flush=True)
+                        pass
 
         if len(self._active_coroutines) > 0:
             raise Exception("runner ending with active coroutines")
@@ -137,7 +139,7 @@ class Runner(arl_eval.EvalBackend):
             for solve in [True, False]:
                 functions = evaluator.getSolveFunctions() if solve else evaluator.getTargetFunctions()
                 for f in functions:
-                    print("Function: %s" % f.name())
+#                    print("Function: %s" % f.name())
                     names = [f.name()]
                     if f.name().find("::") != -1:
                         names.append(f.name().replace(':','_'))
@@ -149,7 +151,7 @@ class Runner(arl_eval.EvalBackend):
                             if name in caller_f.f_locals.keys():
                                 self._executor_func_m[None]
                                 # TODO: should probably check args
-                                print("Found in locals")
+#                                print("Found in locals")
                                 func = caller_f.f_locals[name]
                                 if not solve and not inspect.iscoroutinefunction(func):
                                     raise Exception("Function %s is a target function, but not declared 'async'" % name)
@@ -157,7 +159,7 @@ class Runner(arl_eval.EvalBackend):
                                 f.setAssociatedData(assoc_data)
                                 break
                             elif name in caller_f.f_globals.keys():
-                                print("Found in globals")
+#                                print("Found in globals")
                                 func = caller_f.f_globals[name]
                                 if not solve and not inspect.iscoroutinefunction(func):
                                     raise Exception("Function %s is a target function, but not declared 'async'" % name)
@@ -182,11 +184,11 @@ class Runner(arl_eval.EvalBackend):
         print("leaveThreads")
 
     def enterThread(self, thread):
-        print("enterThread")
+#        print("enterThread")
         pass
 
     def leaveThread(self, thread):
-        print("leaveThread")
+#        print("leaveThread")
         pass
 
     def enterAction(self, thread, action):
@@ -196,14 +198,9 @@ class Runner(arl_eval.EvalBackend):
         print("leaveAction: %s" % action.name())
 
     def callFuncReq(self, thread, func_t, params):
-        print("callFuncReq %d" % len(params))
         task_caller = func_t.getAssociatedData()
 
-        for p in params:
-            print("Param: %s" % str(p.type()))
-
         if task_caller is not None:
-            print("Invoking the function")
             if task_caller._is_async:
                 self._active_coroutines.append(
                     self._backend.start(
@@ -212,12 +209,13 @@ class Runner(arl_eval.EvalBackend):
                 task_caller.call(thread, params)
         else:
             print("No task caller for %s" % func_t.name())
+
     def emitMessage(self, msg):
         if self._msg_fp is not None:
             self._msg_fp.write(self._msg_pref)
             self._msg_fp.write(msg)
             self._msg_fp.write("\n")
         else:
-            print(self._msg_pref + msg)
+            print(self._msg_pref + msg, flush=True)
 
 
