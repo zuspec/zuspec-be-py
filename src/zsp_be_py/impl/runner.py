@@ -59,7 +59,7 @@ class Runner(arl_eval.EvalBackend):
         self._thread_data = []
         self._active_coroutines = []
 
-        self._pss_top_t = self._ctxt.findDataTypeComponent(root_comp)
+        self._pss_top_t = self._ctxt.findDataTypeStruct(root_comp)
         if self._pss_top_t is None:
             raise Exception("Failed to find root component type \"%s\"" % root_comp)
         
@@ -88,7 +88,7 @@ class Runner(arl_eval.EvalBackend):
         arl_eval_f = arl_eval.Factory.inst()
         vsc_solvers_f = vsc_solvers.Factory.inst()
 
-        root_action_t = self._ctxt.findDataTypeAction(root_action)
+        root_action_t = self._ctxt.findDataTypeStruct(root_action)
 
         if root_action_t == None:
             raise Exception("Failed to find action type %s" % root_action)
