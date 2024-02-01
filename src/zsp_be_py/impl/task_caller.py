@@ -52,7 +52,7 @@ class TaskCaller(object):
     async def call_target(self, thread, params):
         func_params = []
         for p in params:
-            func_params.append(ValRefToPyVal().toPyVal(p))
+            func_params.append(ValRefToPyVal(thread).toPyVal(p))
 
         ret = await self._func(*func_params)
 
