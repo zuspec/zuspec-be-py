@@ -28,8 +28,6 @@ package:
       url: https://github.com/zuspec/zuspec-parser.git
     - name: zuspec-fe-parser
       url: https://github.com/zuspec/zuspec-fe-parser.git
-    - name: ivpm
-      src: pypi
     - name: ninja
       src: pypi
     - name: cython
@@ -55,8 +53,6 @@ package:
       url: https://github.com/zuspec/zuspec-parser.git
     - name: zuspec-fe-parser
       url: https://github.com/zuspec/zuspec-fe-parser.git
-    - name: ivpm
-      src: pypi
     - name: ninja
       src: pypi
     - name: cython
