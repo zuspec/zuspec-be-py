@@ -1,8 +1,10 @@
 name: CI
 on:
-  - push
-  - pull_request
-  - workflow_dispatch
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0/2'
 
 jobs:
   ci-linux:
@@ -17,7 +19,7 @@ jobs:
         BUILD_NUM: ${{ github.run_id }}
       run: |
         #python3 -m pip install ivpm
-        python3 -m pip install wheel twine setuptools --upgrade
+        python3 -m pip install wheel twine packaging setuptools --upgrade
         #python3 -m ivpm update -a
         #./packages/python/bin/python3 -m pip install wheel twine
         echo "BUILD_NUM=$BUILD_NUM" > src/zsp_be_py/__build_num__.py
