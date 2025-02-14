@@ -1,6 +1,6 @@
 
 package:
-  name: zuspec
+  name: zuspec-be-py
 
   setup-deps:
   - ninja
