@@ -1,0 +1,27 @@
+
+package:
+  name: zuspec-be-py
+
+  dep-sets:
+
+  - name: default
+    deps:
+    - name: zuspec-dataclasses
+      url: https://github.com/zuspec/zuspec-dataclasses.git
+    - name: zuspec-ir-core
+      url: https://github.com/zuspec/zuspec-ir-core.git
+
+  - name: default-dev
+    deps:
+    - name: zuspec-dataclasses
+      url: https://github.com/zuspec/zuspec-dataclasses.git
+    - name: zuspec-ir-core
+      url: https://github.com/zuspec/zuspec-ir-core.git
+    - name: pytest
+      src: pypi
+    - name: pytest-dfm
+      url: https://github.com/dv-flow/pytest-dfm.git
+    - name: Sphinx
+      src: pypi
+    - name: sphinx-rtd-theme
+      src: pypi

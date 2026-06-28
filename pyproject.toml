@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zuspec-be-py"
+version = "0.0.1"
+description = "Zuspec live-Python backend: Zuspec IR to executable Python (zdc) classes"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Matthew Ballance", email = "matt.ballance@gmail.com"}
+]
+
+dependencies = [
+    "zuspec-ir-core",
+    "zuspec-dataclasses",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-dfm",
+    "sphinx",
+]
+
+[project.urls]
+Homepage = "https://github.com/zuspec/zuspec-be-py"
+Repository = "https://github.com/zuspec/zuspec-be-py"
+
+[tool.setuptools]
+packages = ["zuspec.be.py"]
+package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-ra --strict-markers --strict-config --showlocals"
+markers = [
+    "unit: Unit tests",
+    "performance: Performance tests",
+    "slow: Tests that take a long time to run",
+    "integration: Integration tests",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
