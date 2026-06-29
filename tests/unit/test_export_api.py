@@ -9,7 +9,7 @@ import pytest
 import zuspec.ir.core as ir
 
 from zuspec.be.py import build_registry, ExportApi, ActionRunner, PssImportError
-from zuspec.dataclasses.rt.import_resolver import ImportSpec
+from zuspec.be.py.rt.import_resolver import ImportSpec
 
 # expr/stmt IR for hand-built action bodies
 from zuspec.ir.core.expr import (

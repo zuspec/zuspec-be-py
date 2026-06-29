@@ -1,8 +1,8 @@
 """IR → live-Python builder.
 
-Converts a :class:`zuspec.ir.core.Context` into live Python classes that use the
-``zuspec.dataclasses`` (zdc) runtime.  No source-code generation is performed —
-all classes are constructed in memory.
+Converts a :class:`zuspec.ir.core.Context` into live Python classes built on the
+backend's own runtime object model (:mod:`zuspec.be.py.model`).  No source-code
+generation is performed — all classes are constructed in memory.
 
 This is the PSS-agnostic core of the ``zuspec.be.py`` backend: it consumes only
 the canonical IR ``Context`` (its ``type_m`` map) plus an optional
@@ -15,9 +15,9 @@ import enum as pyenum
 import types as pytypes
 from typing import Any, Dict, List, Optional, Tuple
 
-import zuspec.dataclasses as zdc
+from zuspec.be.py import model as zdc
 import zuspec.ir.core as zdc_ir
-from zuspec.dataclasses.rt.executor import (
+from zuspec.be.py.rt.executor import (
     ObjectExecutor, AsyncObjectExecutor, _ReturnSignal,
 )
 
@@ -416,8 +416,8 @@ class IrToRuntimeBuilder:
                 continue  # skip unbounded or zero-capacity pools for now
             # Build a factory that makes cap fresh resource instances at init time
             def _pool_factory(cls=elem_cls, n=cap):
-                from zuspec.dataclasses.types import ClaimPool
-                from zuspec.dataclasses.rt.resource_rt import make_resource
+                from zuspec.be.py.model.types import ClaimPool
+                from zuspec.be.py.rt.resource_rt import make_resource
                 items = []
                 for i in range(n):
                     r = make_resource(cls)
@@ -564,7 +564,7 @@ class IrToRuntimeBuilder:
         # Fast path: compile import-free bodies to native Python.  The compiler
         # bails (returns None) on any import call or unsupported node, leaving
         # those bodies to the async interpreter.
-        from zuspec.dataclasses.rt.ir_compiler import IRCompiler
+        from zuspec.be.py.rt.ir_compiler import IRCompiler
         compiled = IRCompiler().compile(
             stmts, self_arg='self_comp', import_names=self._import_names)
         if compiled is not None:
@@ -585,7 +585,7 @@ class IrToRuntimeBuilder:
     def _build_post_init(self, func: zdc_ir.Function):
         stmts = func.body
         # Try to compile to native Python for speed; fall back to interpreter.
-        from zuspec.dataclasses.rt.ir_compiler import IRCompiler
+        from zuspec.be.py.rt.ir_compiler import IRCompiler
         compiled = IRCompiler().compile(stmts, self_arg='self_comp')
         if compiled is not None:
             return compiled
@@ -601,7 +601,7 @@ class IrToRuntimeBuilder:
     def _build_sync_fn(self, func: zdc_ir.Function):
         stmts = func.body
         # Try to compile to native Python for speed; fall back to interpreter.
-        from zuspec.dataclasses.rt.ir_compiler import IRCompiler
+        from zuspec.be.py.rt.ir_compiler import IRCompiler
         compiled = IRCompiler().compile(stmts, self_arg='self_comp')
         if compiled is not None:
             return compiled

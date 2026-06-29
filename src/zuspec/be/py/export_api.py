@@ -17,8 +17,8 @@ from __future__ import annotations
 import dataclasses as _dc
 from typing import Any, Dict, List, Optional
 
-from zuspec.dataclasses.rt.scenario_runner import ScenarioRunner
-from zuspec.dataclasses.rt.import_resolver import ImportResolver, ImportSpec
+from zuspec.be.py.rt.scenario_runner import ScenarioRunner
+from zuspec.be.py.rt.import_resolver import ImportResolver, ImportSpec
 
 from .builder import build_runtime, ClassRegistry
 

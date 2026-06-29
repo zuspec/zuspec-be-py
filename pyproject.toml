@@ -15,11 +15,18 @@ authors = [
 
 dependencies = [
     "zuspec-ir-core",
-    "zuspec-dataclasses",
 ]
 
 [project.optional-dependencies]
+# The IR-driven backend (builder/runtime/solver) is self-contained. The legacy
+# ``@zdc``-authored entry points (parsing Python activity()/constraint source,
+# DataModelFactory, contract checking) reach back into the dataclasses frontend
+# via lazy imports; install this extra to use them.
+zdc = [
+    "zuspec-dataclasses",
+]
 dev = [
+    "zuspec-dataclasses",
     "pytest>=6.0",
     "pytest-dfm",
     "sphinx",
