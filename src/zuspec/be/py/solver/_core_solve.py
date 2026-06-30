@@ -137,7 +137,7 @@ def _ensure_output_payloads(obj: Any, struct_type) -> None:
     """
     try:
         from zuspec.ir.core.fields import FieldInOut
-        from zuspec.dataclasses.solver.frontend.constraint_system_builder import (
+        from .frontend.constraint_system_builder import (
             _OutputBufferProxy,
         )
     except ImportError:

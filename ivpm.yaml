@@ -6,8 +6,10 @@ package:
 
   - name: default
     deps:
-    - name: zuspec-dataclasses
-      url: https://github.com/zuspec/zuspec-dataclasses.git
+    # NOTE: zuspec-dataclasses is intentionally NOT a production dependency.
+    # be-py is the lower layer (IR-driven backend/runtime/solver) and imports
+    # cleanly without dataclasses; the lazy @zdc-authored back-edges are opt-in
+    # (the ``zdc`` extra in pyproject.toml). It remains in default-dev for tests.
     - name: zuspec-ir-core
       url: https://github.com/zuspec/zuspec-ir-core.git
 
