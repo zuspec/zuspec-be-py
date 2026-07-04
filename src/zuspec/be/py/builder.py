@@ -779,6 +779,11 @@ class IrToRuntimeBuilder:
                     if isinstance(b, _SB):
                         for s in b.body or []:
                             _walk(s)
+            # ActivityMatch keeps its arms under `.cases` (MatchCase.body), which
+            # the generic attr sweep above does not reach.
+            for case in getattr(node, 'cases', []) or []:
+                for s in getattr(case, 'body', []) or []:
+                    _walk(s)
 
         for cls in list(self.python_classes.values()):
             activity_ir = getattr(cls, '__activity__', None)
