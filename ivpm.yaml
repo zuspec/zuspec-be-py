@@ -2,6 +2,14 @@
 package:
   name: zuspec-be-py
 
+  # Without this, ivpm falls back to "the first dep-set in the file", which is
+  # `default` -- runtime deps only, no pytest and no Sphinx. CI runs a bare
+  # `ivpm update -a --py-pip` (no -d), so the test step died on
+  # `./packages/python/bin/pytest: No such file or directory` and the docs step
+  # on `sphinx-build: not found`. A checkout is a development context, so
+  # development deps are the right default here.
+  default-dep-set: default-dev
+
   dep-sets:
 
   - name: default
@@ -20,6 +28,13 @@ package:
     - name: zuspec-ir-core
       url: https://github.com/zuspec/zuspec-ir-core.git
     - name: pytest
+      src: pypi
+    # tests/unit/test_emit_module.py and test_export_api.py carry @pytest.mark.anyio.
+    # pytest runs with --strict-markers, so without the anyio plugin registering
+    # that marker the two files fail COLLECTION ("'anyio' not found in `markers`
+    # configuration option") rather than failing a test -- the suite reports an
+    # error, not a skip.
+    - name: anyio
       src: pypi
     - name: pytest-dfm
       url: https://github.com/dv-flow/pytest-dfm.git
