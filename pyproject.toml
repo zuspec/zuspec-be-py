@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zuspec-be-py"
-version = "0.0.1"
+dynamic = ["version"]
 description = "Zuspec live-Python backend: Zuspec IR to executable Python (zdc) classes"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,6 +15,8 @@ authors = [
 
 dependencies = [
     "zuspec-ir-core",
+    # Imported at module scope by solver/core/constraint_system.py.
+    "networkx>=3.0",
 ]
 
 [project.optional-dependencies]
@@ -37,8 +39,17 @@ Homepage = "https://github.com/zuspec/zuspec-be-py"
 Repository = "https://github.com/zuspec/zuspec-be-py"
 
 [tool.setuptools]
-packages = ["zuspec.be.py"]
 package-dir = {"" = "src"}
+
+# Auto-discovery rather than an explicit list. The list said ["zuspec.be.py"]
+# and so shipped 4 of the 126 modules under src/ -- everything in rt/, model/
+# and the other subpackages was silently absent from the wheel, and
+# `from zuspec.be.py import model` failed on an installed release while
+# working in a source checkout. namespaces = true is required: zuspec/ and
+# zuspec/be/ are PEP 420 namespace dirs with no __init__.py.
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -67,3 +78,8 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
+
+# The version lives in __version__.py, not here: CI checks a release tag
+# against BASE in that file, and stamps SUFFIX for development builds.
+[tool.setuptools.dynamic]
+version = {attr = "zuspec.be.py.__version__.VERSION"}
