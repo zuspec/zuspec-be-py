@@ -359,9 +359,9 @@ class IrToRuntimeBuilder:
             # For state types: ensure initial field exists (built-in PSS LRM field).
             # The pre-processor injects these into PSS source; we guard here in case
             # the Python-native path bypasses PSS parsing.
-            if dt.flow_kind == 'resource' and not hasattr(cls, 'instance_id'):
+            if dt.flow_kind is zdc_ir.FlowKind.RESOURCE and not hasattr(cls, 'instance_id'):
                 cls.instance_id = 0
-            if dt.flow_kind == 'state' and not hasattr(cls, 'initial'):
+            if dt.flow_kind is zdc_ir.FlowKind.STATE and not hasattr(cls, 'initial'):
                 # Rebuild the dataclass with `initial` as an additional field
                 import dataclasses as _dc2
                 extra_ns = {'initial': _dc2.field(default=True), '__annotations__': {'initial': bool}}
