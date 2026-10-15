@@ -19,7 +19,8 @@ authors = [
 ]
 
 dependencies = [
-    "zuspec-ir-core",
+    # 0.2.0: FlowKind (builder compares flow_kind against the enum).
+    "zuspec-ir-core>=0.2.0",
     # Imported at module scope by solver/core/constraint_system.py.
     "networkx>=3.0",
 ]
