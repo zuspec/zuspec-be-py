@@ -420,16 +420,13 @@ def _emit_constraint(pb, constraint, system, name_to_id, emit_ctx) -> Optional[i
         return pb.expr_binary(17, not_cond, then)  # BIN_OR
 
     elif isinstance(constraint, UniqueConstraint):
-        import ctypes
         var_ids = []
         for var_name in constraint.variables:
             vid = name_to_id.get(var_name)
             if vid is None:
                 return None
             var_ids.append(vid)
-        n = len(var_ids)
-        arr = (ctypes.c_uint32 * n)(*var_ids)
-        pb.add_all_different(n, arr)
+        pb.add_all_different(var_ids)
         return None  # all_different is added directly, not as an expression
 
     else:

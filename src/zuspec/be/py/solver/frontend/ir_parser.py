@@ -1104,9 +1104,16 @@ class IRExpressionParser:
         """Parse a StmtUnique into a UniqueConstraint."""
         variables = []
         for name in stmt.vars:
-            if name not in self.variable_map:
+            if name in self.variable_map:
+                variables.append(self.variable_map[name])
+                continue
+            # An array (`unique {arr}`) stands for its elements.
+            i = 0
+            while f"{name}[{i}]" in self.variable_map:
+                variables.append(self.variable_map[f"{name}[{i}]"])
+                i += 1
+            if i == 0:
                 raise ParseError(f"'unique' constraint references unknown variable '{name}'")
-            variables.append(self.variable_map[name])
         return [UniqueConstraint(variables=variables, source_location=self.current_source)]
 
     def _expand_unique_call(self, expr: ExprCall) -> List[Constraint]:
