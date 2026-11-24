@@ -1079,11 +1079,11 @@ class ActivityRunner:
 
 
 def _sample_covergroups(action_type: type, action: Any, coverage_model) -> None:
-    """Sample all PssCoverGroups attached to *action_type* into *coverage_model*.
+    """Sample all covergroups (``CovergroupDef``) attached to *action_type* into *coverage_model*.
 
     Called from ``_traverse`` after body/activity execution so that all field
     values (including those written by body()) are committed before sampling.
-    Each coverpoint's ``target_expr`` is evaluated via ``eval_cover_expr``;
+    Each coverpoint's ``target`` is evaluated via ``eval_cover_expr``;
     crosses are sampled from the last-recorded coverpoint values.
     """
     from .coverage_model import eval_cover_expr
@@ -1092,13 +1092,13 @@ def _sample_covergroups(action_type: type, action: Any, coverage_model) -> None:
         return
     for cg in pss_cgs:
         for cp in cg.coverpoints:
-            value = eval_cover_expr(cp.target_expr, action)
+            value = eval_cover_expr(cp.target, action)
             if value is not None:
                 coverage_model.sample(cg.instance_name, cp.name, value)
         for cx in cg.crosses:
             vals = tuple(
                 coverage_model.last_value(cg.instance_name, cp_name)
-                for cp_name in cx.coverpoint_names
+                for cp_name in cx.coverpoints
             )
             if all(v is not None for v in vals):
                 coverage_model.sample_cross(cg.instance_name, cx.name, vals)

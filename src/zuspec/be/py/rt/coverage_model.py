@@ -1,7 +1,7 @@
 """Runtime coverage model for PSS covergroup sampling.
 
 Tracks sampled coverpoint values and cross-product hit counts for
-``PssCoverGroup`` instances attached to actions via ``__pss_covergroups__``.
+``CovergroupDef`` instances attached to actions via ``__pss_covergroups__``.
 Sampling is triggered after body/activity execution in ``ActivityRunner._traverse``.
 """
 from __future__ import annotations
@@ -114,9 +114,9 @@ class PssCoverageModel:
 
 
 def eval_cover_expr(expr: Any, action_instance: Any) -> Any:
-    """Evaluate a PSS coverpoint ``target_expr`` against a live action instance.
+    """Evaluate a PSS coverpoint ``target`` against a live action instance.
 
-    ``target_expr`` is always a simple field-path IR expression rooted at
+    ``target`` is always a simple field-path IR expression rooted at
     ``TypeExprRefSelf()``, so a recursive ``getattr`` walk is sufficient.
 
     Returns ``None`` if any attribute in the chain is missing.
